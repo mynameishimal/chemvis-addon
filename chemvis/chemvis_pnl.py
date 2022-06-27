@@ -15,6 +15,6 @@ class CHEMV_PT_PANEL(Panel):
         row = layout.row()
         col = row.column()
         col.operator("object.apply_all_mods", text="Apply all")
-
-        col = row.column()
+        
+        # col = row.column()
         col.operator("object.cancel_all_mods", text="Cancel all")
