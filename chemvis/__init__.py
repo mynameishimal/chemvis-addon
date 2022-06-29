@@ -25,14 +25,14 @@ bl_info = {
 
 if "bpy" in locals():
     import importlib
-    importlib.reload(A)
+    importlib.reload(CHEMVIS_OT_Vis_Chem_Structure)
     importlib.reload(CHEMV_PT_PANEL)
     importlib.reload(CHEMVIS_OT_install_dependencies)
     importlib.reload(CHEMVIS_dep_install_panel)
     importlib.reload(import_module)
 
 else:
-    from .chemvis_op import CHEMVIS_OT_Apply_All_Op
+    from .chemvis_op import CHEMVIS_OT_Vis_Chem_Structure
     from .chemvis_pnl import CHEMV_PT_PANEL
     from .packager.chemvis_packages import CHEMVIS_OT_install_dependencies
     from .packager.chemvis_packages import import_module
@@ -51,7 +51,7 @@ Dependency = namedtuple("Dependency", ["module", "package", "name"])
 dependencies = (Dependency(module="scipy", package=None, name=None),)
 
 dependencies_installed = False
-# classes = (CHEMVIS_OT_Apply_All_Op, CHEMV_PT_PANEL,
+# classes = (CHEMVIS_OT_Vis_Chem_Structure, CHEMV_PT_PANEL,
 #            )
 
 
@@ -67,7 +67,7 @@ class EXAMPLE_preferences(bpy.types.AddonPreferences):
 preference_classes = (CHEMVIS_OT_install_dependencies,
                       CHEMVIS_dep_install_panel)
 
-classes = (CHEMVIS_OT_Apply_All_Op, CHEMV_PT_PANEL,)
+classes = (CHEMVIS_OT_Vis_Chem_Structure, CHEMV_PT_PANEL,)
 
 
 def register():

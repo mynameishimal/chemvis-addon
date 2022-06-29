@@ -1,27 +1,40 @@
+from operator import index
 import bpy
 from bpy.types import Operator
 import scipy.io as sio
 
+from . import utils
 
-class CHEMVIS_OT_Apply_All_Op(Operator):
-    bl_idname = "object.apply_all_mods"
-    bl_label = "Apply all"
-    bl_description = "Apply all operators of the active object"
 
-    mat_fname = "qm7.mat"
-    mat_contents = sio.loadmat(mat_fname)
-    atomCoord = mat_contents.get("R")
-    ind = 0
-    atomCoordinates = atomCoord[ind]
-    for x in atomCoordinates:
-        bpy.ops.mesh.primitive_uv_sphere_add(
-            radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-        bpy.context.object.location[0] = x[0]
-        bpy.context.object.location[1] = x[1]
-        bpy.context.object.location[2] = x[2]
-        bpy.context.object.scale[0] = 0.2
-        bpy.context.object.scale[1] = 0.2
-        bpy.context.object.scale[2] = 0.2
+class CHEMVIS_OT_Vis_Chem_Structure(Operator):
+    bl_idname = "object.vis_chem_structure"
+    bl_label = "Show chemical"
+    bl_description = "shows 3d representation of small molecule"
+
+    def execute(self, context):
+        # ensure_collection = utils.ensure_collection()
+        mat_fname = "qm7.mat"
+        mat_contents = sio.loadmat(mat_fname)
+        atomCoord = mat_contents.get("R")
+        ind = 0
+        atomCoordinates = atomCoord[ind]
+
+        for index, coord in enumerate(atomCoordinates):
+            # print(x)
+            if coord[0] != 0 and coord[1] != 0 and coord[2] != 0:
+                bpy.ops.mesh.primitive_ico_sphere_add(
+                    radius=0.2, enter_editmode=False, align='WORLD', location=(coord[0], coord[1], coord[2]), scale=(1, 1, 1))
+                sphere = context.active_object
+                sphere.name = "atom" + str(index)
+        return {"FINISHED"}
+
+    # def execute(self, context):
+    #     active_obj = context.view_layer.objects.active
+
+    #     for mod in active_obj.modifiers:
+    #         bpy.ops.object.modifier_apply(modifier=mod.name)
+
+    #     return {"FINISHED"}
 
     @classmethod
     def poll(cls, context):
@@ -33,37 +46,37 @@ class CHEMVIS_OT_Apply_All_Op(Operator):
 
         return False
 
-    def execute(self, context):
-        active_obj = context.view_layer.objects.active
+    # def execute(self, context):
+    #     active_obj = context.view_layer.objects.active
 
-        for mod in active_obj.modifiers:
-            bpy.ops.object.modifier_apply(modifier=mod.name)
+    #     for mod in active_obj.modifiers:
+    #         bpy.ops.object.modifier_apply(modifier=mod.name)
 
-        return {"FINISHED"}
+    #     return {"FINISHED"}
 
 
-class CHEMVIS_OT_Cancel_All_Op(Operator):
-    bl_idname = "object.cancel_all_mods"
-    bl_label = "Cancel all"
-    bl_description = "Cancel all operators of the active object"
+# class CHEMVIS_OT_Cancel_All_Op(Operator):
+#     bl_idname = "object.cancel_all_mods"
+#     bl_label = "Cancel all"
+#     bl_description = "Cancel all operators of the active object"
 
-    @classmethod
-    def poll(cls, context):
-        obj = context.object
+#     @classmethod
+#     def poll(cls, context):
+#         obj = context.object
 
-        if obj is not None:
-            if obj.mode == "OBJECT":
-                return True
+#         if obj is not None:
+#             if obj.mode == "OBJECT":
+#                 return True
 
-        return False
+#         return False
 
-    def execute(self, context):
-        active_obj = context.view_layer.objects.active
+#     def execute(self, context):
+#         active_obj = context.view_layer.objects.active
 
-        for mod in active_obj.modifiers:
-            bpy.ops.object.modifier_remove(modifier=mod.name)
+#         for mod in active_obj.modifiers:
+#             bpy.ops.object.modifier_remove(modifier=mod.name)
 
-        return {"FINISHED"}
+#         return {"FINISHED"}
 
 # class ObjectVisualizeX(Operator):
 #     bl_idname="object.plot_atoms"
